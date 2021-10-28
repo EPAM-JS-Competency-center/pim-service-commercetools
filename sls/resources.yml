@@ -1,0 +1,43 @@
+Resources:
+  productsRestApiUrlSSMParameter:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: /pim-products-rest/api-url
+      Type: String
+      Value:
+        Fn::Join:
+          - ""
+          - - "https://"
+            - Ref: ApiGatewayRestApi
+            - ".execute-api."
+            - "${self:provider.region}"
+            - ".amazonaws.com/"
+            - "${self:provider.stage}"
+  iamLambdaRoleExecution:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: ${self:custom.namePrefix}-lambda-role-execution
+      Description: "Lambda execution role for ${self:custom.env.serviceName}"
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Policies:
+        - PolicyName: Logging_Policy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource:
+                  - "arn:aws:logs:*:*:*"
