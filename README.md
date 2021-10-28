@@ -1,6 +1,6 @@
-# aws-rest-api-serverless-lambda
+# pim-service-commercetools (MACH example)
 
-Open-source hands-on guide to build real production ready rest api in Serverless manner
+Open-source hands-on guide to build real production ready pim-service using commercetools platform
 
 ## Flow
 
