@@ -14,10 +14,7 @@ import {
 } from '@commercetools/typescript-sdk';
 import { ByProjectKeyRequestBuilder } from '@commercetools/typescript-sdk/dist/typings/generated/client/by-project-key-request-builder';
 import fetch from 'node-fetch';
-import {
-  ProductDetails,
-  ProductTypeDetailsDraft,
-} from 'types/product-details';
+import { ProductDetails, ProductTypeDetailsDraft } from 'types/product-details';
 
 export class CommerceToolsProvider {
   private api: ByProjectKeyRequestBuilder;
@@ -87,21 +84,31 @@ export class CommerceToolsProvider {
     productDetails: ProductDetails,
     productTypeId: string
   ) {
-    const res = await this.api
-      .products()
-      .post({
-        body: {
-          name: productDetails.name,
-          productType: { typeId: 'product-type', id: productTypeId },
-          slug: productDetails.slug,
-        },
-      })
-      .execute();
+    if ('name' in productDetails) {
+      const res = await this.api
+        .products()
+        .post({
+          body: {
+            name: productDetails.name,
+            productType: { typeId: 'product-type', id: productTypeId },
+            slug: productDetails.slug,
+          },
+        })
+        .execute();
 
-    return res.body;
+      return res.body;
+    }
+
+    return null;
   }
 
   async createProduct(productDetails: ProductDetails): Promise<Product | null> {
+    if ('id' in productDetails) {
+      throw new Error(
+        `CommerceToolsProvider: Cannot create a product with potentially existing ID: ${productDetails.id}`
+      );
+    }
+
     console.log('CommerceToolsProvider: Creating Product...');
 
     let productTypeId = null;

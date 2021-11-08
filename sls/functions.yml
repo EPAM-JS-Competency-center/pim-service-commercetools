@@ -1,18 +1,9 @@
-createProduct:
-  handler: src/handlers/createProduct.handler
-  name: ${self:custom.namePrefix}-create-product-handler
+createOrUpdateProduct:
+  handler: src/handlers/createOrUpdateProduct.handler
+  name: ${self:custom.namePrefix}-create-or-update-product-handler
   events:
     - http:
         method: post
         path: products
-        cors: true
-        private: true
-updateProduct:
-  handler: src/handlers/updateProduct.handler
-  name: ${self:custom.namePrefix}-update-product-handler
-  events:
-    - http:
-        method: put
-        path: products/{productSku}
         cors: true
         private: true
